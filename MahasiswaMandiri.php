@@ -1,6 +1,7 @@
 <?php
 // File: MahasiswaMandiri.php
 require_once 'Mahasiswa.php';
+require_once 'koneksi/database.php'; // <--- MEMBERIKAN AKSES KONEKSI DATABASE
 
 class MahasiswaMandiri extends Mahasiswa {
     protected $golonganUkt;
@@ -12,11 +13,9 @@ class MahasiswaMandiri extends Mahasiswa {
         $this->namaWali = $namaWali;
     }
 
-    // =========================================================================
-    // OVERRIDING METHOD TAHAP 5
-    // =========================================================================
+    // Overriding Method (Tahap 5)
     public function hitungTagihanSemester() {
-        // Tarif UKT Nominal + Rp 100.000 (biaya operasional kemahasiswaan/praktikum flat)
+        // Logika Bisnis Mandiri: tarifUktNominal + 100000
         return $this->tarifUktNominal + 100000;
     }
 
@@ -24,7 +23,9 @@ class MahasiswaMandiri extends Mahasiswa {
         return "Jenis Pembiayaan: Mandiri | Golongan UKT: " . $this->golonganUkt . " | Nama Wali: " . $this->namaWali;
     }
 
-    public static function getByNimMandiri($pdo, $nim) {
+    // Method Query SELECT-WHERE (Tahap 4) yang mengambil koneksi dari class Database
+    public static function getByNimMandiri($nim) {
+        $pdo = Database::getConnection(); // <--- Menggunakan akses database langsung
         $sql = "SELECT * FROM tabel_mahasiswa WHERE jenis_pembiayaan = 'Mandiri' AND nim = :nim";
         $stmt = $pdo->prepare($sql);
         $stmt->execute(['nim' => $nim]);

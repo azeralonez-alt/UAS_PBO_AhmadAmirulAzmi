@@ -1,6 +1,7 @@
 <?php
 // File: MahasiswaBidikmisi.php
 require_once 'Mahasiswa.php';
+require_once 'koneksi/database.php'; // <--- MEMBERIKAN AKSES KONEKSI DATABASE
 
 class MahasiswaBidikmisi extends Mahasiswa {
     protected $nomorKipKuliah;
@@ -12,11 +13,9 @@ class MahasiswaBidikmisi extends Mahasiswa {
         $this->danaSakuSubsidi = $danaSakuSubsidi;
     }
 
-    // =========================================================================
-    // OVERRIDING METHOD TAHAP 5
-    // =========================================================================
+    // Overriding Method (Tahap 5)
     public function hitungTagihanSemester() {
-        // Digratiskan penuh dari tagihan karena skema KIP-Kuliah
+        // Logika Bisnis Bidikmisi: Gratis (0)
         return 0;
     }
 
@@ -24,7 +23,9 @@ class MahasiswaBidikmisi extends Mahasiswa {
         return "Jenis Pembiayaan: Bidikmisi | No KIP-K: " . $this->nomorKipKuliah . " | Dana Saku/Bulan: Rp " . number_format($this->danaSakuSubsidi, 0, ',', '.');
     }
 
-    public static function getByNimBidikmisi($pdo, $nim) {
+    // Method Query SELECT-WHERE (Tahap 4) yang mengambil koneksi dari class Database
+    public static function getByNimBidikmisi($nim) {
+        $pdo = Database::getConnection(); // <--- Menggunakan akses database langsung
         $sql = "SELECT * FROM tabel_mahasiswa WHERE jenis_pembiayaan = 'Bidikmisi' AND nim = :nim";
         $stmt = $pdo->prepare($sql);
         $stmt->execute(['nim' => $nim]);
